@@ -18,7 +18,14 @@ cStart = matrix[1][1]
 cEnd = matrix[3][3]
 
 #Calculation of the matrix cost
-costMatrix = calculateCost(matrix)
+costMatrix = calculateCost(matrix,rMatrix)
+#Calculation of the Manhattan distance
+manhattanMatrix = calculateManhattanDistance(matrix, rMatrix, cEnd)
+#Computation to find f(n)
+computedMatrix = addMatrixCostManhattan(costMatrix, manhattanMatrix, rMatrix)
+#Path finding
 
+print(matrix[0][-1])
 print(matrix)
-print(costMatrix)
+print(computedMatrix)
+pathfindingMatrix4direction(matrix, computedMatrix, rMatrix, cEnd)
