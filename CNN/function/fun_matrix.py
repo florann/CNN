@@ -1,4 +1,5 @@
 import copy
+from dataclasses import dataclass
 
 
 #function to build a matrix with a specific size
@@ -99,7 +100,7 @@ def pathfindingMatrix4direction(pMatrix, pComputedMatrix, rMatrix, pEnd):
             else:
                 bXaPlus1 = -1
         except NameError:
-            print("Index out of bound : Ya = " + Ya + "| Xa + 1 = "+ Xa + 1)
+            print("Index out of bound : Ya = " + str(Ya) + "| Xa + 1 = "+ str(Xa + 1))
 
         try:
             if (Xa - 1) >= 0:
@@ -107,7 +108,7 @@ def pathfindingMatrix4direction(pMatrix, pComputedMatrix, rMatrix, pEnd):
             else:
                 bXaMinus1 = -1
         except NameError:
-            print("Index out of bound : Ya = " + Ya + "| Xa - 1 = "+ Xa - 1)
+            print("Index out of bound : Ya = " + str(Ya) + "| Xa - 1 = "+ str(Xa - 1))
 
         try:
             if (Ya + 1) < rMatrix:
@@ -115,7 +116,7 @@ def pathfindingMatrix4direction(pMatrix, pComputedMatrix, rMatrix, pEnd):
             else:
                 bYaPlus1 = -1
         except NameError:
-            print("Index out of bound : Ya + 1= " + Ya+1 + "| Xa = "+ Xa)
+            print("Index out of bound : Ya + 1= " + str(Ya+1) + "| Xa = "+ str(Xa))
         
         try:
             if (Ya - 1) >= 0 :
@@ -123,11 +124,12 @@ def pathfindingMatrix4direction(pMatrix, pComputedMatrix, rMatrix, pEnd):
             else:
                 bYaMinus1 = -1
         except NameError:
-            print("Index out of bound : Ya = " + Ya-1 + "| Xa = "+ Xa )
+            print("Index out of bound : Ya = " + str(Ya-1) + "| Xa = "+ str(Xa) )
         
         #Counter loop = 0 / 1 / 2 / 3
         bArrayCross = [bXaPlus1, bXaMinus1, bYaPlus1, bYaMinus1]
         counterLoop = -1
+        print(bArrayCross)
 
         for crossValue in bArrayCross:
             if bufferLowest > crossValue and crossValue > 0 or bufferLowest == -1:
@@ -147,9 +149,99 @@ def pathfindingMatrix4direction(pMatrix, pComputedMatrix, rMatrix, pEnd):
             path.append(pMatrix[Ya-1][Xa])
             Ya = Ya-1
     
-        print(path)
-        print(Ya)
-        print(Xa)
-        #break
+    print(path)
 
     return path
+
+
+#Globals
+rMatrix = 4
+matrix = createMatrix(rMatrix)
+
+positionStart = matrix[0][0]
+positionEnd = matrix[3][3]
+
+#New function with a different methodology to create a A* algorithm
+#Here's the different step to reach the goal :
+# - Create a matrix with obstacle  
+# - Evaluate the cost of all nodes
+# - Algorithm of the A* search 
+# Break out step by step of the algorithm :
+# - Have an openlist which will contain all nodes that need to be evaluated 
+# - Have a closelist which will contain all nodes already evaluated 
+# - Core job
+# --> Crawl the openlist until it's empty
+# --> For each node crawled calculted f(n)
+# --> Pick the node with the lowest f(n) cost  
+# ----> Discover neighbors 
+# ----> Evaluate the cost of neighbors 
+def pathinfingAStar():
+
+    openList = []
+    closeList = []
+    path = []
+
+    StartNode = Node(positionStart, 
+         ManhattanCost(positionStart[0],positionStart[1],positionEnd[0],positionEnd[0]),
+         [])
+
+    openList.append(StartNode)
+
+    print(openList)
+
+    while(len(openList) > 0):
+        #The node with the lowest cost in the openlist
+        currentNode = lowestFCost(openList)
+        if(currentNode == -1):
+            break
+        print(currentNode)
+        neighbors = findNeighbors(currentNode, matrix)
+        print(neighbors)
+        return 1
+    
+    return path
+
+#Defining a type for nodes
+@dataclass
+class Node:
+    position : list #Location in the matrix
+    cost : float #The f cost
+    parents : list #The link to all parents
+    
+
+def ManhattanCost(Xa, Ya, Xb, Yb):
+    return abs(Yb - Ya) + abs(Xa - Xb)
+
+#Function that return the node with the lowest cost
+def lowestFCost(openList):
+    lowestNode = -1
+    for Node in openList:
+        if  lowestNode == -1 or Node.cost < lowestNode.cost:
+            lowestNode = Node
+        
+    return lowestNode
+
+#Function that will find neighbor nodes 
+def findNeighbors(node :Node, matrix):
+    #Variable that will return neighbors 
+    neighbors = []
+    #Possible move in the following order : down, right, up, left
+    moves = [[1,0],[0,1],[-1,0],[0,-1]]
+    for move in moves:
+        #Storing new position
+        movedPosition = [node.position[0] + move[0], node.position[1] + move[1]]
+        #If position are in matrix range
+        if movedPosition[0] < rMatrix and movedPosition[0] >= 0 and movedPosition[1] < rMatrix and movedPosition[1] >= 0:
+            #Creation of the discovered node
+            discoveredNode = Node(matrix[movedPosition[0]][movedPosition[1]],
+                                  #Calculation of the manhattan cost
+                                  ManhattanCost(movedPosition[0],movedPosition[1],
+                                                positionEnd[0],positionEnd[1]),
+                                                node)
+            neighbors.append(discoveredNode)
+    
+    return neighbors
+
+#Function that will choose the best option between all neighbors 
+def chooseNeighbors(neighbors, matrix):
+    
