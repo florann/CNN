@@ -182,22 +182,38 @@ def pathinfingAStar():
     path = []
 
     StartNode = Node(positionStart, 
-         ManhattanCost(positionStart[0],positionStart[1],positionEnd[0],positionEnd[0]),
+            ManhattanCost(positionStart[0],positionStart[1],positionEnd[0],positionEnd[0]),
+            ManhattanCost(positionStart[0],positionStart[1],positionEnd[0],positionEnd[0]),
+            0,
          [])
 
     openList.append(StartNode)
 
     print(openList)
 
+    cpt = 0
+
     while(len(openList) > 0):
         #The node with the lowest cost in the openlist
         currentNode = lowestFCost(openList)
+        print("Current node")
+        print(currentNode)
         if(currentNode == -1):
             break
-        print(currentNode)
+        if currentNode.position == positionEnd:
+            break
         neighbors = findNeighbors(currentNode, matrix)
-        print(neighbors)
-        return 1
+        for neighborNode in neighbors:
+            openList.append(neighborNode)
+        openList.remove(currentNode)
+        closeList.append(currentNode)
+        print("Print open list")
+        print(openList)
+        
+        #return 1
+        cpt += 1
+        if cpt == 3:
+            break
     
     return path
 
@@ -206,6 +222,8 @@ def pathinfingAStar():
 class Node:
     position : list #Location in the matrix
     cost : float #The f cost
+    costg: float 
+    costh: float
     parents : list #The link to all parents
     
 
@@ -232,16 +250,19 @@ def findNeighbors(node :Node, matrix):
         movedPosition = [node.position[0] + move[0], node.position[1] + move[1]]
         #If position are in matrix range
         if movedPosition[0] < rMatrix and movedPosition[0] >= 0 and movedPosition[1] < rMatrix and movedPosition[1] >= 0:
+            #Calulation of the manhattan cost 
+            costh = ManhattanCost(movedPosition[0],movedPosition[1], positionEnd[0],positionEnd[1])
+            costg = node.costg + 1
             #Creation of the discovered node
             discoveredNode = Node(matrix[movedPosition[0]][movedPosition[1]],
-                                  #Calculation of the manhattan cost
-                                  ManhattanCost(movedPosition[0],movedPosition[1],
-                                                positionEnd[0],positionEnd[1]),
-                                                node)
+                                    (costg + costh), #costf
+                                    costg,
+                                    costh,
+                                        node)
             neighbors.append(discoveredNode)
     
     return neighbors
 
 #Function that will choose the best option between all neighbors 
-def chooseNeighbors(neighbors, matrix):
+#def chooseNeighbors(neighbors, matrix):
     
