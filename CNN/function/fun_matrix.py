@@ -183,36 +183,37 @@ def pathinfingAStar():
 
     StartNode = Node(positionStart, 
             ManhattanCost(positionStart[0],positionStart[1],positionEnd[0],positionEnd[0]),
-            ManhattanCost(positionStart[0],positionStart[1],positionEnd[0],positionEnd[0]),
             0,
+            ManhattanCost(positionStart[0],positionStart[1],positionEnd[0],positionEnd[0]),
          [])
 
     openList.append(StartNode)
-
-    print(openList)
 
     cpt = 0
 
     while(len(openList) > 0):
         #The node with the lowest cost in the openlist
         currentNode = lowestFCost(openList)
-        print("Current node")
-        print(currentNode)
         if(currentNode == -1):
             break
+
         if currentNode.position == positionEnd:
+            print("position equal")
+            print(currentNode)
             break
         neighbors = findNeighbors(currentNode, matrix)
         for neighborNode in neighbors:
             openList.append(neighborNode)
         openList.remove(currentNode)
+        currentNode = clearReplicate(currentNode, openList, closeList)
         closeList.append(currentNode)
         print("Print open list")
-        print(openList)
+        print(currentNode)
         
         #return 1
         cpt += 1
-        if cpt == 3:
+        if cpt == 30:
+            print("Break")
             break
     
     return path
@@ -262,6 +263,18 @@ def findNeighbors(node :Node, matrix):
             neighbors.append(discoveredNode)
     
     return neighbors
+
+#Search for the same nodes in the stack, and find for all of them find the parent 
+#with the less f cost
+def clearReplicate(currentNode :Node, openList, closeList):
+    copyCurrentNode = copy.deepcopy(currentNode)
+    for node in openList:
+        if copyCurrentNode.position == node.position:
+            if copyCurrentNode.cost > node.cost:
+                copyCurrentNode.parents = node.parents
+            openList.remove(node)
+            closeList.append(node)
+    return copyCurrentNode
 
 #Function that will choose the best option between all neighbors 
 #def chooseNeighbors(neighbors, matrix):
