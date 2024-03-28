@@ -1,30 +1,20 @@
 #import numpy to create matrix easily 
 import numpy as np
+import threading as th
+import concurrent.futures as ThreadManager
+ 
 
 from function.fun_matrix import *
 
-#Creating matrix
-matrix = []
-
-#Max matrice range
-rMatrix = 4
-
-#Creation of the matrix
-matrix = createMatrix(rMatrix)
-
-#Start coordinated
-cStart = matrix[1][1]
-#End coordinated
-cEnd = matrix[3][3]
-
-#Calculation of the matrix cost
-costMatrix = calculateCost(matrix,rMatrix)
-
-#Calculation of the Manhattan distance
-manhattanMatrix = calculateManhattanDistance(matrix, rMatrix, cEnd)
-
-#Computation to find f(n)
-computedMatrix = addMatrixCostManhattan(costMatrix, manhattanMatrix, rMatrix)
-
 #Equivalent of the main function
-pathinfingAStar()
+#pathfindingAStar(matrix[0][0], matrix[4][4])
+
+with ThreadManager.ThreadPoolExecutor() as executor:
+    #Starting threads with a pathfinding calculation
+    returnValue1 = executor.submit(pathfindingAStar, matrix[0][0],matrix[4][4])
+    returnValue2 = executor.submit(pathfindingAStar, matrix[0][0],matrix[0][4])
+
+    print(returnValue1.result())
+    print(returnValue2.result())
+
+

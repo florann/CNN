@@ -24,6 +24,13 @@ def createMatrix(rMatrix):
     return matrix
 
 
+#Function that will create obstacle inside a matrix. The default value of obstacle is -1
+def createObstacle(listObstacle, matrix):
+    for obstacle in listObstacle:
+        Y = obstacle[0]
+        X = obstacle[1]
+        matrix[Y][X] = -1
+
 
 #function to calculate the cost of the index
 def calculateCost(pMatrix, rMatrix):
@@ -155,11 +162,10 @@ def pathfindingMatrix4direction(pMatrix, pComputedMatrix, rMatrix, pEnd):
 
 
 #Globals
-rMatrix = 4
+rMatrix = 5
 matrix = createMatrix(rMatrix)
-
-positionStart = matrix[0][0]
-positionEnd = matrix[3][3]
+listObstacle = [[1,0],[1,1],[0,3],[1,3],[2,3],[3,1],[3,2]]
+createObstacle(listObstacle, matrix)
 
 #New function with a different methodology to create a A* algorithm
 #Here's the different step to reach the goal :
@@ -175,8 +181,8 @@ positionEnd = matrix[3][3]
 # --> Pick the node with the lowest f(n) cost  
 # ----> Discover neighbors 
 # ----> Evaluate the cost of neighbors 
-def pathinfingAStar():
-
+def pathfindingAStar(positionStart, positionEnd):
+    print("Start")
     openList = []
     closeList = []
     path = []
@@ -198,21 +204,17 @@ def pathinfingAStar():
             break
 
         if currentNode.position == positionEnd:
-            print("position equal")
-            print(currentNode)
-            break
-        neighbors = findNeighbors(currentNode, matrix)
+            print("Position found")
+            return currentNode
+        neighbors = findNeighbors(currentNode, matrix, positionEnd)
         for neighborNode in neighbors:
             openList.append(neighborNode)
         openList.remove(currentNode)
         currentNode = clearReplicate(currentNode, openList, closeList)
         closeList.append(currentNode)
-        print("Print open list")
-        print(currentNode)
-        
-        #return 1
+
         cpt += 1
-        if cpt == 30:
+        if cpt > 1000:
             print("Break")
             break
     
@@ -241,7 +243,7 @@ def lowestFCost(openList):
     return lowestNode
 
 #Function that will find neighbor nodes 
-def findNeighbors(node :Node, matrix):
+def findNeighbors(node :Node, matrix, positionEnd):
     #Variable that will return neighbors 
     neighbors = []
     #Possible move in the following order : down, right, up, left
@@ -254,17 +256,18 @@ def findNeighbors(node :Node, matrix):
             #Calulation of the manhattan cost 
             costh = ManhattanCost(movedPosition[0],movedPosition[1], positionEnd[0],positionEnd[1])
             costg = node.costg + 1
-            #Creation of the discovered node
-            discoveredNode = Node(matrix[movedPosition[0]][movedPosition[1]],
-                                    (costg + costh), #costf
-                                    costg,
-                                    costh,
-                                        node)
-            neighbors.append(discoveredNode)
+            if matrix[movedPosition[0]][movedPosition[1]] != -1:
+                #Creation of the discovered node
+                discoveredNode = Node(matrix[movedPosition[0]][movedPosition[1]],
+                                        (costg + costh), #costf
+                                        costg,
+                                        costh,
+                                            node)
+                neighbors.append(discoveredNode)
     
     return neighbors
 
-#Search for the same nodes in the stack, and find for all of them find the parent 
+#Function that will search for the same nodes in the stack, and find for all of them find the parent 
 #with the less f cost
 def clearReplicate(currentNode :Node, openList, closeList):
     copyCurrentNode = copy.deepcopy(currentNode)
@@ -276,6 +279,3 @@ def clearReplicate(currentNode :Node, openList, closeList):
             closeList.append(node)
     return copyCurrentNode
 
-#Function that will choose the best option between all neighbors 
-#def chooseNeighbors(neighbors, matrix):
-    
