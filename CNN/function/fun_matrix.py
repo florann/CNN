@@ -162,10 +162,11 @@ def pathfindingMatrix4direction(pMatrix, pComputedMatrix, rMatrix, pEnd):
 
 
 #Globals
-rMatrix = 5
+rMatrix = 20
 matrix = createMatrix(rMatrix)
-listObstacle = [[1,0],[1,1],[0,3],[1,3],[2,3],[3,1],[3,2]]
-createObstacle(listObstacle, matrix)
+print(matrix)
+#listObstacle = [[1,0],[1,1],[0,3],[1,3],[2,3],[3,1],[3,2]]
+#createObstacle(listObstacle, matrix)
 
 #New function with a different methodology to create a A* algorithm
 #Here's the different step to reach the goal :
@@ -202,15 +203,19 @@ def pathfindingAStar(positionStart, positionEnd):
         currentNode = lowestFCost(openList)
         if(currentNode == -1):
             break
-
+        #When the goal has been reach
         if currentNode.position == positionEnd:
-            print("Position found")
             return currentNode
+        #Looking for neighbors
         neighbors = findNeighbors(currentNode, matrix, positionEnd)
+        #Adding neighbors to the open list
         for neighborNode in neighbors:
             openList.append(neighborNode)
+        #Removing the explored node from the open list
         openList.remove(currentNode)
+        #Search for node with the same parent as the current node and delete them from the open list
         currentNode = clearReplicate(currentNode, openList, closeList)
+        #Adding the current node the close list
         closeList.append(currentNode)
 
         cpt += 1
@@ -279,3 +284,25 @@ def clearReplicate(currentNode :Node, openList, closeList):
             closeList.append(node)
     return copyCurrentNode
 
+
+#Function to print clearly the path from the start to the end
+def printPath(node :Node):
+    #Return value 
+    path = []
+
+    while node.parents != []:
+        path.insert(0,node.position)
+        node = node.parents
+    path.insert(0, node.position)
+
+    return path
+
+#Function that will simulate a traffic light crossroad
+def trafficLightCrossroad(position):
+    #Possible index to tag as a part of the crossroad : down, right, up, left
+    moves = [[1,0],[0,1],[-1,0],[0,-1]]
+    for move in moves:
+        #Storing new position
+        movedPosition = [position[0] + move[0], position[1] + move[1]]
+        #If in matrix range
+        if movedPosition[0] < rMatrix and movedPosition[0] >= 0 and movedPosition[1] < rMatrix and movedPosition[1] >= 0:
