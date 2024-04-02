@@ -305,4 +305,4 @@ def trafficLightCrossroad(position):
         #Storing new position
         movedPosition = [position[0] + move[0], position[1] + move[1]]
         #If in matrix range
-        if movedPosition[0] < rMatrix and movedPosition[0] >= 0 and movedPosition[1] < rMatrix and movedPosition[1] >= 0:
+        #if movedPosition[0] < rMatrix and movedPosition[0] >= 0 and movedPosition[1] < rMatrix and movedPosition[1] >= 0:

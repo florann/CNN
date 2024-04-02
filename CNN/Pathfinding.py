@@ -9,12 +9,13 @@ from Server.server import *
 
 #Equivalent of the main function
 #pathfindingAStar(matrix[0][0], matrix[4][4])
-'''
+
 hostName = "localhost"
 serverPort = 8080
 
-if __name__ == "__main__":        
-    webServer = WebRequestHandler((hostName, serverPort), )
+if __name__ == "__main__":   
+    from http.server import HTTPServer     
+    webServer = HTTPServer((hostName, serverPort), WebRequestHandler)
     print("Server started http://%s:%s" % (hostName, serverPort))
 
     try:
@@ -24,7 +25,7 @@ if __name__ == "__main__":
 
     webServer.server_close()
     print("Server stopped.")
-'''
+
     
 with ThreadManager.ThreadPoolExecutor() as executor:
     #Starting threads with a pathfinding calculation
