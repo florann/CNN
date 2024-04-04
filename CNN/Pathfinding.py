@@ -3,9 +3,7 @@ import numpy as np
 import threading as th
 import concurrent.futures as ThreadManager
 #importing function
-from CNN.PythonFunction.func_pathFinding import *
-#importing server
-from PythonServer.server import *
+from PythonFunction.func_pathFinding import *
 
 if __name__ == '__main__':
     app.run(debug=True)

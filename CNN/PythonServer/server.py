@@ -12,9 +12,10 @@ def home():
 
 @app.route('/run-script', methods=['POST'])
 def run_script():
+    print("Run script")
     if request.method == 'POST':
         # Assuming you have a script named `your_script.py` in the same directory
-        result = subprocess.run(['python', 'your_script.py'], capture_output=True, text=True)
+        result = subprocess.run(['python', '../Pathfinding.py'], capture_output=True, text=True)
         resultOutput = result.stdout.replace('\\n', '<br>')
         return f"Script Output:<br>{resultOutput}"
     else:
