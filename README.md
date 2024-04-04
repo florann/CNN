@@ -7,4 +7,4 @@ Hello, it's a small project in which I want to create a small reproduction of a 
 ## Used library 
 
 - Flask
-- - Module Flask CORS
+  - Module Flask CORS
