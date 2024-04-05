@@ -1,8 +1,7 @@
-// use client
+"use client"
 import React, { useState } from 'react';
-import './App.css';
 
-function App() {
+function Client() {
   const [message, setMessage] = useState('');
 
   const fetchMessage = async () => {
@@ -12,13 +11,11 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <header className="App-header">
+    <div>
         <p>{message || "Click the button to get a message from Flask!"}</p>
         <button onClick={fetchMessage}>Get Message</button>
-      </header>
     </div>
   );
 }
 
-export default App;
+export default Client;
