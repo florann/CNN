@@ -31,6 +31,44 @@ def createObstacle(listObstacle, matrix):
         X = obstacle[1]
         matrix[Y][X] = -1
 
+#Function that will create obstacle inside a matrix in a procedural way
+#Description of the procedure : 
+# - We will tag each matrix cells respecting the specific pattern
+# - The function will have 2 parameters, the matrix itself and a shift value
+#    -> The shift value will be use to generate the obstacle with a specific distance between them. To resume it will be the 
+# size of obstacles.
+# - After tagging matrix cells, we will do another crawling in to create real obstacle dimension ( It's probaly better to do the whole
+# job with only one itteration ) 
+# Constrain : The matrix must be crawlable be the pathfinding function so we need to have 'road' that can be travel.
+# Information : The formula to place properly obstacle is (Shift x 2) + 1
+def createObstacleProcedural(matrix, shift):
+    #Shift move
+    shiftMove = (shift*2)+1
+    #Cross movement 
+    moves = [[shiftMove,0],[0,shiftMove],[-shiftMove,0],[0,-shiftMove]]
+    numberOfLine = matrix.count()
+    numberOfColumn = matrix[0].count()
+    cptLine = 0
+    cptColumn = 0
+    #Crawl the matrix from the beginning + 1
+    while cptLine <= numberOfLine:
+        while cptColumn <= numberOfColumn:
+            cptColumn += 1
+        cptLine += 1
+    #Other method without crawling all cells of the matrix
+    obstacleToPlace = True
+    positionLine = 0
+    positionColumn = 1
+    while obstacleToPlace == True:
+        if matrix[positionLine][positionColumn] != -1:
+            matrix[positionLine][positionColumn] = -1
+        for move in moves:
+            if (matrix[positionLine + move[0]][positionColumn + move[1]] != -1 
+            and (positionLine + move[0] < numberOfLine) and (positionLine + move[0] > 0) 
+            and (positionColumn + move[0] < numberOfColumn) and (positionColumn + move[0] > 0)) :
+                matrix[positionLine + move[0]][positionColumn + move[1]] = -1
+            
+
 
 #function to calculate the cost of the index
 def calculateCost(pMatrix, rMatrix):

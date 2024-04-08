@@ -5,8 +5,6 @@ import concurrent.futures as ThreadManager
 #importing function
 from PythonFunction.func_pathFinding import *
 
-if __name__ == '__main__':
-    app.run(debug=True)
 
 with ThreadManager.ThreadPoolExecutor() as executor:
     #Starting threads with a pathfinding calculation
