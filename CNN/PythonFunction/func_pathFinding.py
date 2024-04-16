@@ -43,7 +43,7 @@ def createObstacle(listObstacle, matrix):
 # Information : The formula to place properly obstacle is (Shift x 2) + 1
 def createObstacleProcedural(matrix, shift):
     #Shift move
-    shiftMove = (shift*2)+1
+    shiftMove = (shift*2)+1 #Need to by dynamic
     #Cross movement 
     moves = [[shiftMove,0],[0,shiftMove],[-shiftMove,0],[0,-shiftMove]]
     numberOfLine = matrix.count()
@@ -68,7 +68,6 @@ def createObstacleProcedural(matrix, shift):
             and (positionColumn + move[0] < numberOfColumn) and (positionColumn + move[0] > 0)) :
                 matrix[positionLine + move[0]][positionColumn + move[1]] = -1
             
-
 
 #function to calculate the cost of the index
 def calculateCost(pMatrix, rMatrix):
