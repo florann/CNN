@@ -116,18 +116,31 @@ def createMatrixObstacle(p_size):
         lstObstacle.append(tmpMatrixObstacle) 
         cpt = cpt + 1
     
+    print(lstObstacle)
     #Shuffle matrix postion store in a list 
     coordinates = shuffleMatrixPosition(matrix)
     #Adding obstacles to matrix
     while findFirstValueOccurenceRandom(matrix, coordinates, 0) != -1:
         position = findFirstValueOccurenceRandom(matrix, coordinates, 0)
-        tmpObstacle = lstObstacle[getRandNumber(10,3)]
-        print(tmpObstacle)
-        if((position[0] + tmpObstacle.shape[0] <= matrix.shape[0]) and (position[1] + tmpObstacle.shape[1] <= matrix.shape[1])):
+
+ 
+        obstacleSize = getRandNumber(10,3)
+        tmpObstacle = lstObstacle[obstacleSize]
+        zeroObstacle = np.zeros((obstacleSize,obstacleSize), dtype=int)
+
+        subMatrix = matrix[position[0]:position[0]+obstacleSize, position[1]:position[1]+obstacleSize]
+        print(subMatrix)
+
+        isFit = False
+        if np.all(subMatrix == zeroObstacle):
+            isFit = True
+
+        if not isFit:
+            matrix[position[0]:position[0]+tmpObstacle.shape[0], position[1]:position[1]+tmpObstacle.shape[1]] = -3
+        elif((position[0] + tmpObstacle.shape[0] <= matrix.shape[0]) and (position[1] + tmpObstacle.shape[1] <= matrix.shape[1])):
             matrix[position[0]:position[0]+tmpObstacle.shape[0], position[1]:position[1]+tmpObstacle.shape[1]] = tmpObstacle
         else:
             matrix[position[0]:position[0]+tmpObstacle.shape[0], position[1]:position[1]+tmpObstacle.shape[1]] = -3
-    print(matrix)
     matrix[matrix == -2] = 0
     print(matrix)
 
