@@ -1,4 +1,6 @@
 import copy
+import numpy as np
+import random as rand
 from dataclasses import dataclass
 
 
@@ -68,6 +70,66 @@ def createObstacleProcedural(matrix, shift):
             and (positionColumn + move[0] < numberOfColumn) and (positionColumn + move[0] > 0)) :
                 matrix[positionLine + move[0]][positionColumn + move[1]] = -1
             
+
+def getRandNumber(p_maxValue,p_value):
+    return round(rand.random()*p_maxValue)%p_value
+
+def findFirstValueOccurenceLinear(p_matrix, p_value):
+ 
+    for row in range(p_matrix.shape[0]) :
+        for column in range(p_matrix.shape[0]) : 
+            if(p_matrix[row, column] == p_value):
+                return (row, column)
+    return -1
+
+
+def shuffleMatrixPosition(p_matrix):
+    coordinates = []
+    for row in range(p_matrix.shape[0]):
+        for column in range(p_matrix.shape[1]):
+            coordinates.append((row, column))
+
+    rand.shuffle(coordinates)
+    return coordinates
+
+def findFirstValueOccurenceRandom(p_matrix, p_coordinates, p_value):
+    
+    for position in p_coordinates:
+        if(p_matrix[position[0],position[1]] == p_value):
+            return(position)
+    return -1
+
+
+#Different approach, we will use the slicing method of python to create square obstacles
+def createMatrixObstacle(p_size):
+    matrix = np.zeros((p_size,p_size), dtype=int)
+    cpt = 2
+    lstObstacle = []
+    #Creation of obstacles
+    while cpt < 5:
+        tmpMatrixObstacle = np.zeros(((cpt+1),(cpt+1)), dtype=int)
+        tmpMatrixObstacle[0, :] = -2
+        tmpMatrixObstacle[:, 0] = -2
+        tmpMatrixObstacle[-1, :] = -2
+        tmpMatrixObstacle[:, -1] = -2
+        tmpMatrixObstacle[tmpMatrixObstacle == 0] = -1
+        lstObstacle.append(tmpMatrixObstacle) 
+        cpt = cpt + 1
+    
+    #Shuffle matrix postion store in a list 
+    coordinates = shuffleMatrixPosition(matrix)
+    #Adding obstacles to matrix
+    while findFirstValueOccurenceRandom(matrix, coordinates, 0) != -1:
+        position = findFirstValueOccurenceRandom(matrix, coordinates, 0)
+        tmpObstacle = lstObstacle[getRandNumber(10,3)]
+        print(tmpObstacle)
+        if((position[0] + tmpObstacle.shape[0] <= matrix.shape[0]) and (position[1] + tmpObstacle.shape[1] <= matrix.shape[1])):
+            matrix[position[0]:position[0]+tmpObstacle.shape[0], position[1]:position[1]+tmpObstacle.shape[1]] = tmpObstacle
+        else:
+            matrix[position[0]:position[0]+tmpObstacle.shape[0], position[1]:position[1]+tmpObstacle.shape[1]] = -3
+    print(matrix)
+    matrix[matrix == -2] = 0
+    print(matrix)
 
 #function to calculate the cost of the index
 def calculateCost(pMatrix, rMatrix):
@@ -201,7 +263,7 @@ def pathfindingMatrix4direction(pMatrix, pComputedMatrix, rMatrix, pEnd):
 #Globals
 rMatrix = 20
 matrix = createMatrix(rMatrix)
-print(matrix)
+#print(matrix)
 #listObstacle = [[1,0],[1,1],[0,3],[1,3],[2,3],[3,1],[3,2]]
 #createObstacle(listObstacle, matrix)
 

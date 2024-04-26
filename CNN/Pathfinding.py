@@ -11,9 +11,6 @@ from PythonFunction.func_pathFinding import *
 rMatrix = 20
 matrix = createMatrix(rMatrix)
 
-def getRandNumber():
-    return round(rand.random()*10)%3
-
 def randomObstacle(matrix):
     #Calcul the number of total cells 
     totalCell = rMatrix*rMatrix
@@ -39,7 +36,11 @@ def randomObstacle(matrix):
     print(matrix)
     print(totalObstacle)
 
-randomObstacle(matrix)
+#randomObstacle(matrix)
+
+#New method of creating matrix with obstacles
+createMatrixObstacle(20)
+
 
 #with ThreadManager.ThreadPoolExecutor() as executor:
 #    #Starting threads with a pathfinding calculation
