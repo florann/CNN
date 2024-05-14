@@ -3,7 +3,7 @@ import numpy as np
 import random as rand
 from dataclasses import dataclass
 
-
+#BASIC FUNCTION FOR MATRIX 
 #function to build a matrix with a specific size
 def createMatrix(rMatrix):
     modCount = -1
@@ -32,6 +32,21 @@ def createObstacle(listObstacle, matrix):
         Y = obstacle[0]
         X = obstacle[1]
         matrix[Y][X] = -1
+
+def printCordinateInsideMatrix(p_matrix: np.matrix):
+    cptRow = 0
+    cptColumn = 0
+    
+    dummyMatrix = copy.deepcopy(p_matrix)
+
+    for row in p_matrix:
+        cptColumn = 0
+        for column in row: 
+            dummyMatrix[cptRow][cptColumn] = [cptRow, cptColumn]
+            cptColumn = cptColumn + 1
+    cptRow = cptRow + 1
+    print(dummyMatrix)
+
 
 #Function that will create obstacle inside a matrix in a procedural way
 #Description of the procedure : 
@@ -70,12 +85,13 @@ def createObstacleProcedural(matrix, shift):
             and (positionColumn + move[0] < numberOfColumn) and (positionColumn + move[0] > 0)) :
                 matrix[positionLine + move[0]][positionColumn + move[1]] = -1
             
-
-def getRandNumber(p_maxValue,p_value):
-    return round(rand.random()*p_maxValue)%p_value
+#Functon de get a radom number between 0 and the specify range
+#p_maxValue : Multiply the float between 0 & 1 by this value
+#p_value : The range that can be returned
+def getRandNumber(p_multiplyCoef,p_value):
+    return round(rand.random()*p_multiplyCoef)%p_value
 
 def findFirstValueOccurenceLinear(p_matrix, p_value):
- 
     for row in range(p_matrix.shape[0]) :
         for column in range(p_matrix.shape[0]) : 
             if(p_matrix[row, column] == p_value):
@@ -93,7 +109,6 @@ def shuffleMatrixPosition(p_matrix):
     return coordinates
 
 def findFirstValueOccurenceRandom(p_matrix, p_coordinates, p_value):
-    
     for position in p_coordinates:
         if(p_matrix[position[0],position[1]] == p_value):
             return(position)
@@ -121,27 +136,37 @@ def createMatrixObstacle(p_size):
     coordinates = shuffleMatrixPosition(matrix)
     #Adding obstacles to matrix
     while findFirstValueOccurenceRandom(matrix, coordinates, 0) != -1:
+        #Crawling the shuffled matrix to get a coordinate
         position = findFirstValueOccurenceRandom(matrix, coordinates, 0)
-
- 
-        obstacleSize = getRandNumber(10,3)
-        tmpObstacle = lstObstacle[obstacleSize]
+        #Choosing randomly an obstacle size
+        obstacleSize = getRandNumber(10,3) + 1
+        tmpObstacle = lstObstacle[obstacleSize - 1]
+        #Create a dummy matrix for comparison
         zeroObstacle = np.zeros((obstacleSize,obstacleSize), dtype=int)
-
+        #Extracting an obstacle's size submatrix off the main matrix 
         subMatrix = matrix[position[0]:position[0]+obstacleSize, position[1]:position[1]+obstacleSize]
-        print(subMatrix)
-
+        # print("SubMatrix")
+        # print(subMatrix)
+        # print(obstacleSize)
+        # print(position)
+        #Check if any of the cell of the extracted matrix contain an obstacle
         isFit = False
-        if np.all(subMatrix == zeroObstacle):
+        if subMatrix.shape == zeroObstacle.shape and np.all(subMatrix == zeroObstacle):
             isFit = True
 
         if not isFit:
-            matrix[position[0]:position[0]+tmpObstacle.shape[0], position[1]:position[1]+tmpObstacle.shape[1]] = -3
+            #One chance in 10 to create arbitrary an obstacle
+            randNum = getRandNumber(10,8)
+            if randNum == 0:
+                matrix[position[0]:position[0]+tmpObstacle.shape[0], position[1]:position[1]+tmpObstacle.shape[1]] = -3
+            else: 
+                matrix[position[0]:position[0]+tmpObstacle.shape[0], position[1]:position[1]+tmpObstacle.shape[1]] = 0
         elif((position[0] + tmpObstacle.shape[0] <= matrix.shape[0]) and (position[1] + tmpObstacle.shape[1] <= matrix.shape[1])):
             matrix[position[0]:position[0]+tmpObstacle.shape[0], position[1]:position[1]+tmpObstacle.shape[1]] = tmpObstacle
         else:
             matrix[position[0]:position[0]+tmpObstacle.shape[0], position[1]:position[1]+tmpObstacle.shape[1]] = -3
     matrix[matrix == -2] = 0
+    matrix[matrix == -1] = 0
     print(matrix)
 
 #function to calculate the cost of the index

@@ -3,6 +3,7 @@ import numpy as np
 import threading as th
 import concurrent.futures as ThreadManager
 import random as rand
+import keyboard as kb
 #importing function
 from PythonFunction.func_pathFinding import *
 
@@ -40,7 +41,19 @@ def randomObstacle(matrix):
 
 #New method of creating matrix with obstacles
 createMatrixObstacle(20)
+printCordinateInsideMatrix(matrix)
+position_start_input = input("Enter a position to start : ")
+position_end_input = input("Enter a position to reach : ")
 
+position_start_input = position_start_input.split(",")
+position_end_input = position_end_input.split(",")
+position_start_input = [int(x) for x in position_start_input]
+position_end_input = [int(x) for x in position_end_input]
+print(position_start_input)
+print(position_end_input)
+
+
+pathfindingAStar(position_start_input, position_end_input)
 
 #with ThreadManager.ThreadPoolExecutor() as executor:
 #    #Starting threads with a pathfinding calculation
