@@ -40,8 +40,9 @@ def randomObstacle(matrix):
 #randomObstacle(matrix)
 
 #New method of creating matrix with obstacles
-createMatrixObstacle(20)
-printCordinateInsideMatrix(matrix)
+obstacleMatrix = createMatrixObstacle(20)
+print(obstacleMatrix)
+#printCordinateInsideMatrix(matrix)
 position_start_input = input("Enter a position to start : ")
 position_end_input = input("Enter a position to reach : ")
 
@@ -53,7 +54,10 @@ print(position_start_input)
 print(position_end_input)
 
 
-pathfindingAStar(position_start_input, position_end_input)
+injectObstacleFromNumpyMatrix(matrix, obstacleMatrix)
+print(matrix)
+resultNode = pathfindingAStar(position_start_input, position_end_input, matrix)
+print(printPath(resultNode))
 
 #with ThreadManager.ThreadPoolExecutor() as executor:
 #    #Starting threads with a pathfinding calculation

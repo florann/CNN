@@ -167,7 +167,8 @@ def createMatrixObstacle(p_size):
             matrix[position[0]:position[0]+tmpObstacle.shape[0], position[1]:position[1]+tmpObstacle.shape[1]] = -3
     matrix[matrix == -2] = 0
     matrix[matrix == -1] = 0
-    print(matrix)
+    matrix[matrix == -3] = -1
+    return matrix
 
 #function to calculate the cost of the index
 def calculateCost(pMatrix, rMatrix):
@@ -319,7 +320,7 @@ matrix = createMatrix(rMatrix)
 # --> Pick the node with the lowest f(n) cost  
 # ----> Discover neighbors 
 # ----> Evaluate the cost of neighbors 
-def pathfindingAStar(positionStart, positionEnd):
+def pathfindingAStar(positionStart, positionEnd, p_matrix):
     print("Start")
     openList = []
     closeList = []
@@ -334,7 +335,6 @@ def pathfindingAStar(positionStart, positionEnd):
     openList.append(StartNode)
 
     cpt = 0
-
     while(len(openList) > 0):
         #The node with the lowest cost in the openlist
         currentNode = lowestFCost(openList)
@@ -344,7 +344,7 @@ def pathfindingAStar(positionStart, positionEnd):
         if currentNode.position == positionEnd:
             return currentNode
         #Looking for neighbors
-        neighbors = findNeighbors(currentNode, matrix, positionEnd)
+        neighbors = findNeighbors(currentNode, p_matrix, positionEnd)
         #Adding neighbors to the open list
         for neighborNode in neighbors:
             openList.append(neighborNode)
@@ -356,7 +356,7 @@ def pathfindingAStar(positionStart, positionEnd):
         closeList.append(currentNode)
 
         cpt += 1
-        if cpt > 1000:
+        if cpt > 3000:
             print("Break")
             break
     
@@ -433,6 +433,25 @@ def printPath(node :Node):
     path.insert(0, node.position)
 
     return path
+
+#Function to inject obstacle inside an array matrix 
+def injectObstacleFromNumpyMatrix(p_matrix, p_matrixObstacle):
+    matrixObstacle = np.asarray(p_matrixObstacle)
+    cptRow = 0
+    cptColumn = 0
+    if(len(matrixObstacle) == len(p_matrix)):
+        for row in p_matrix:
+            cptColumn = 0
+            for column in row:
+                if matrixObstacle[cptRow][cptColumn] == -1:
+                    p_matrix[cptRow][cptColumn] = matrixObstacle[cptRow][cptColumn]
+                cptColumn = cptColumn + 1
+            cptRow = cptRow + 1
+    
+
+
+
+
 
 #Function that will simulate a traffic light crossroad
 def trafficLightCrossroad(position):
