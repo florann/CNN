@@ -448,17 +448,3 @@ def injectObstacleFromNumpyMatrix(p_matrix, p_matrixObstacle):
                 cptColumn = cptColumn + 1
             cptRow = cptRow + 1
     
-
-
-
-
-
-#Function that will simulate a traffic light crossroad
-def trafficLightCrossroad(position):
-    #Possible index to tag as a part of the crossroad : down, right, up, left
-    moves = [[1,0],[0,1],[-1,0],[0,-1]]
-    for move in moves:
-        #Storing new position
-        movedPosition = [position[0] + move[0], position[1] + move[1]]
-        #If in matrix range
-        #if movedPosition[0] < rMatrix and movedPosition[0] >= 0 and movedPosition[1] < rMatrix and movedPosition[1] >= 0:
